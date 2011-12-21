@@ -1,0 +1,5 @@
+https://github.com/dbalatero/typhoeus
+http://ruby-doc.org/core-1.9.3/Fiber.html
+http://exceptionalruby.com/
+http://blogs.usenix.org/2011/11/15/ben-rockwood-interview/
+http://sakito.jp/emacs/emacsobjectivec.html
