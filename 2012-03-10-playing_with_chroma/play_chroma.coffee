@@ -60,7 +60,7 @@ testHSL = (s) ->
     [-180, s, 0.3]
     [-180, s, 0.1]
   ].map((hsl) ->
-    "<span class=\"cell\" style=\"background-color:#{ chroma.hsl(hsl[0], hsl[1], hsl[2]).hex() };\">.</span>"
+    "<span class=\"cell\" style=\"background-color:#{ chroma.hsl(hsl).hex() };\">.</span>"
   ).join("")
   result
 
@@ -90,7 +90,7 @@ testLAB = (a) ->
     [0.1, a, 0.2]
     [0.1, a, 0.4]
   ].map((lab) ->
-    "<span class=\"cell\" style=\"background-color:#{ chroma.lab(lab[0], lab[1], lab[2]).hex() };\">.</span>"
+    "<span class=\"cell\" style=\"background-color:#{ chroma.lab(lab).hex() };\">.</span>"
   ).join("")
   result
 
