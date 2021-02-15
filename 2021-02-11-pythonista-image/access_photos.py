@@ -2,6 +2,7 @@ from PIL import Image
 import photos
 import ui
 import io
+import image_processor
 
 # too slow ;-(
 def get_all_assets():
@@ -41,7 +42,11 @@ def main():
 	for i in range(len(assets)):
 		image_id = f'imageview{i}'
 		# view[image_id].image = assets[i].get_ui_image()
-		view[image_id].image = conver_image_pil2ui(assets[i].get_image())
+		# view[image_id].image = conver_image_pil2ui(assets[i].get_image())
+		
+		image = assets[i].get_image().resize((80, 80))
+		atkinson_image = image_processor.atkinson(image)
+		view[image_id].image = conver_image_pil2ui(atkinson_image)
 
 if __name__ == '__main__':
 	main()
