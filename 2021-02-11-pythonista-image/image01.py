@@ -1,4 +1,5 @@
 from PIL import Image
+import math
 
 def invert(img):
 	rgb_img = img.convert('RGB')
@@ -53,6 +54,63 @@ def blur(img):
 	
 	return img2
 
+def brightness(r, g, b, brightnessValue=None):
+	# FIXME
+	mono = int(float((r + g + b) / 3.0))
+	if brightnessValue is not None:
+		mono += brightnessValue
+		if mono > 255:
+			mono = 255
+		elif mono < 0:
+			mono = 0
+	return mono
+
+def atkinson(src_img, brightnessValue=None):
+	src_rgb_img = src_img.convert('RGB')
+	width, height = src_img.size
+	result_img = Image.new('RGB', (width, height))
+	
+	gray_array_length = width * height
+	gray_array = [0] * gray_array_length
+	for y in range(height):
+		for x in range(width):
+			r, g, b = src_rgb_img.getpixel((x, y))
+			bright_temp = brightness(r, g, b, brightnessValue)
+			
+			# brightness correction curve
+			bright_temp = int(math.sqrt(255.0) * math.sqrt(bright_temp))
+			if bright_temp > 255:
+				bright_temp = 255
+			elif bright_temp < 0:
+				bright_temp = 0
+			
+			darkness = int(255 - bright_temp)
+			index = y * width + x
+			darkness += gray_array[index]
+			if darkness >= 128:
+				result_img.putpixel((x, y), (0, 0, 0))
+				# TODO: specify dark_color with atkinson's argument
+				darkness -= 128
+			else:
+				result_img.putpixel((x, y), (255, 255, 255))
+						
+			darkn8 = int(round(float(darkness) / 8.0))
+
+			# Atkinson dithering algorithm
+			if index + 1 < gray_array_length:
+				gray_array[index + 1] += darkn8
+			if index + 2 < gray_array_length:
+				gray_array[index + 2] += darkn8
+			if index + width - 1 < gray_array_length:
+				gray_array[index + width - 1] += darkn8
+			if index + width < gray_array_length:
+				gray_array[index + width] += darkn8
+			if index + width + 1 < gray_array_length:
+				gray_array[index + width + 1] += darkn8
+			if index + width * 2 < gray_array_length:
+				gray_array[index + width * 2] += darkn8
+	return result_img
+
 def main():
 	img = Image.open('test:Lenna')
 	# img.show()
@@ -60,8 +118,11 @@ def main():
 	# inverted_img = invert(img)
 	# inverted_img.show()
 	
-	blured_img = blur(img)
-	blured_img.show()
+	# blured_img = blur(img)
+	# blured_img.show()
+	
+	atkinson_img = atkinson(img)
+	atkinson_img.show()
 
 if __name__ == '__main__':
 	main()
