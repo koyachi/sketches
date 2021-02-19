@@ -44,7 +44,31 @@ def main():
 		# view[image_id].image = assets[i].get_ui_image()
 		# view[image_id].image = conver_image_pil2ui(assets[i].get_image())
 		
-		image = assets[i].get_image().resize((80, 80))
+		# image = assets[i].get_image().resize((80, 80))
+		
+		resize_max = 480
+		image = assets[i].get_image()
+		(width, height) = image.size
+		if width > height:
+			width = resize_max
+			height = (resize_max / width) * height
+		else:
+			width = (resize_max / height) * width
+			height = resize_max
+		width = int(width)
+		height = int(height)
+		image = image.resize((width, height))
+		
+		# crop center
+		thumbnail_width = 64
+		center_x = width / 2
+		center_y = height / 2
+		left = int(center_x - thumbnail_width / 2)
+		right = int(center_x + thumbnail_width / 2)
+		top = int(center_y - thumbnail_width / 2)
+		bottom = int(center_y + thumbnail_width / 2)
+		image = image.crop((left, top, right, bottom))
+		
 		atkinson_image = image_processor.atkinson(image)
 		view[image_id].image = conver_image_pil2ui(atkinson_image)
 
