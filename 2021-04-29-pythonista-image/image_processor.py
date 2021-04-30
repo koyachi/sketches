@@ -65,7 +65,7 @@ def gradient_demo():
 	vert_gradient(draw, region, gradient_color, color_palette)
 	image.show()
 
-def gradient_atkinson_image():
+def gradient_atkinson_image(width=190, height=100):
 	# black潰れる
 	#color_palette = [BLACK, WHITE]
 	# GRAY=127
@@ -74,7 +74,8 @@ def gradient_atkinson_image():
 	# 1024はでかい
 	#region = Rect(0, 0, 1024, 1024)
 	#region = Rect(0, 0, 128, 128)
-	region = Rect(0, 0, 190, 190)
+	#region = Rect(0, 0, 190, 190)
+	region = Rect(0, 0, width, height)
 	#region = Rect(0, 0, 256, 256)
 	imgx, imgy = region.max.x + 1, region.max.y + 1
 	image = Image.new("RGB", (imgx, imgy), WHITE)
@@ -87,29 +88,55 @@ def gradient_atkinson_image():
 # via https://stackoverflow.com/a/41980290
 def draw_rectangle(draw, coordinate, color, width=1):
 	for i in range(width):
-		rect_start = (coordinate[0][0] - i, coordinate[0][1] - i)
-		rect_end = (coordinate[1][0] + i, coordinate[1][1] + i)
+		ii = i + 1
+		rect_start = (coordinate[0][0] - ii, coordinate[0][1] - ii)
+		rect_end = (coordinate[1][0] + ii, coordinate[1][1] + ii)
 		draw.rectangle((rect_start, rect_end), outline = color)
 
-def frame_image(src_image, width, height, frame_thick):
-	region = Rect(0, 0, width, height)
+# src_image: メイン画像
+# output_width: 出力画像幅
+# output_height: 出力画像高さ
+# frame_thick: 	画像内の余白厚み(枠領域含む)
+# border_thick: frame_thick内にしめる枠領域の厚み
+# padding: メイン画像との余白
+def frame_image(src_image, output_width, output_height, frame_thick, border_thick, padding):
+	region = Rect(0, 0, output_width, output_height)
 	imgx, imgy = region.max.x + 1, region.max.y + 1
 	# TODO: 黒ぶち
 	image = Image.new("RGB", (imgx, imgy), WHITE)
 	draw = ImageDraw.Draw(image)
 	#draw.rectangle([(0,0), (width,height)], outline=BLACK)
-	border_thick = 10
-	draw_rectangle(draw, [(border_thick,border_thick), (width-border_thick,height-border_thick)], color=BLACK, width=border_thick)
+	offset = padding + border_thick
+	draw_rectangle(
+		draw,
+		[
+			(offset, offset),
+			(output_width - offset, output_height - offset)
+		],
+		color=BLACK,
+		width=border_thick
+	)
 	
 	#resample = Image.NEAREST
 	resample = Image.BILINEAR
-	resized_image = src_image.resize((width - frame_thick * 2, height - frame_thick * 2), resample=resample)
-	image.paste(resized_image, (frame_thick, frame_thick))
+	resized_image = src_image.resize(
+		(
+			output_width - (padding + frame_thick) * 2,
+		  output_height - (padding + frame_thick) * 2
+		),
+		resample=resample
+	)
+	image.paste(resized_image, (
+		padding + frame_thick,
+		padding + frame_thick
+	))
 	return image
 
 def demo():
-	content = gradient_atkinson_image()
-	frame = frame_image(content, 1024, 1024, 40)
+	#content = gradient_atkinson_image(190, 190)
+	content = gradient_atkinson_image(90, 90)
+	frame = frame_image(content, 1024, 1024, 60, 10, 160)
+	# frame = frame_image(content, 1024, 1024, 60, 20, 160)
 	frame.show()
 
 def invert(img):
