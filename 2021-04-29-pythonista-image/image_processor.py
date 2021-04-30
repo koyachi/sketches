@@ -100,7 +100,7 @@ def draw_rectangle(draw, coordinate, color, width=1):
 # border_thick: frame_thick内にしめる枠領域の厚み
 # padding: メイン画像との余白
 def frame_image(src_image, output_width, output_height, frame_thick, border_thick, padding):
-	region = Rect(0, 0, output_width, output_height)
+	region = Rect(0, 0, output_width-1, output_height-1)
 	imgx, imgy = region.max.x + 1, region.max.y + 1
 	# TODO: 黒ぶち
 	image = Image.new("RGB", (imgx, imgy), WHITE)
@@ -133,8 +133,8 @@ def frame_image(src_image, output_width, output_height, frame_thick, border_thic
 	return image
 
 def demo():
-	#content = gradient_atkinson_image(190, 190)
-	content = gradient_atkinson_image(90, 90)
+	content = gradient_atkinson_image(190, 190)
+	#content = gradient_atkinson_image(90, 90)
 	frame = frame_image(content, 1024, 1024, 60, 10, 160)
 	# frame = frame_image(content, 1024, 1024, 60, 20, 160)
 	frame.show()
