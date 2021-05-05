@@ -85,6 +85,15 @@ def gradient_atkinson_image(width=190, height=100):
 	#atkinson_img.show()
 	return atkinson_img
 
+# width, heightによっては表れる画像下部の不要なパターンを除去
+def bottom_fixed_gradient_atkinson_image(width=190, height=100):
+	atkinson_img = gradient_atkinson_image(width, height)
+	white_width = width + 2
+	white_height = int(height / 10)
+	white_img = Image.new("RGB", (white_width, white_height), WHITE)
+	atkinson_img.paste(white_img, (0, height - white_height + 2))
+	return atkinson_img
+
 # via https://stackoverflow.com/a/41980290
 def draw_rectangle(draw, coordinate, color, width=1):
 	for i in range(width):
@@ -111,7 +120,7 @@ def frame_image(src_image, output_width, output_height, frame_thick, border_thic
 		draw,
 		[
 			(offset, offset),
-			(output_width - offset, output_height - offset)
+			(output_width - offset-1, output_height - offset-1)
 		],
 		color=BLACK,
 		width=border_thick
@@ -132,12 +141,136 @@ def frame_image(src_image, output_width, output_height, frame_thick, border_thic
 	))
 	return image
 
-def demo():
+class IconPattern:
+	def __init__(self, description, size, frame_thick, border_thick, padding, content_size):
+		self.description = description
+		self.size = size
+		self.frame_thick = frame_thick
+		self.border_thick = border_thick
+		self.padding = padding
+		self.content_size = content_size
+
+def icon_ios():
+	patterns = [
+		IconPattern(
+			"iPad notification @1x",
+			size=20,
+			frame_thick=2,
+			border_thick=1,
+			padding=3,
+			content_size=70
+			),
+		IconPattern(
+			"iPad/iPhone settings @1x",
+			size=29,
+			frame_thick=2,
+			border_thick=1,
+			padding=5,
+			content_size=70
+			),
+		IconPattern(
+			"iPad notification @2x, notification @2x, iPad spotlight @1x",
+			size=40,
+			frame_thick=2,
+			border_thick=1,
+			padding=6,
+			content_size=70
+			),
+		IconPattern(
+			"iPad/iPhone notification @2x",
+			size=58,
+			frame_thick=3,
+			border_thick=1,
+			padding=9,
+			content_size=70
+			),
+		IconPattern(
+			"notification, @3x",
+			size=60,
+			frame_thick=4,
+			border_thick=2,
+			padding=9,
+			content_size=70
+			),
+		IconPattern(
+			"iPad AppIcon, @1x",
+			size=76,
+			frame_thick=4,
+			border_thick=2,
+			padding=12,
+			content_size=70
+			),
+		IconPattern(
+			"iPad spotlight @2x, Spotlight @2x",
+			size=80,
+			frame_thick=4,
+			border_thick=2,
+			padding=13,
+			content_size=70
+			),
+		IconPattern(
+			"Settings @3x",
+			size=87,
+			frame_thick=5,
+			border_thick=2,
+			padding=14,
+			content_size=70
+			),
+		IconPattern(
+			"Spotlighte @3x, AppIcon @2x",
+			size=120,
+			frame_thick=6,
+			border_thick=2,
+			padding=18,
+			content_size=70
+			),
+		IconPattern(
+			"iPad AppIcon @2x",
+			size=152,
+			frame_thick=7,
+			border_thick=3,
+			padding=23,
+			content_size=78
+			),
+		IconPattern(
+			"iPadPro AppIcon @2x",
+			size=167,
+			frame_thick=10,
+			border_thick=3,
+			padding=24,
+			content_size=80
+			),
+		IconPattern(
+			"AppIcon @3x",
+			size=180,
+			frame_thick=10,
+			border_thick=4,
+			padding=30,
+			content_size=80
+			),
+		IconPattern(
+			"AppStore",
+			size=1024,
+			frame_thick=60,
+			border_thick=10,
+			padding=160,
+			content_size=190
+			),
+		]
+	for pattern in patterns:
+		content = bottom_fixed_gradient_atkinson_image(pattern.content_size, pattern.content_size)
+		frame = frame_image(content, pattern.size, pattern.size, pattern.frame_thick, pattern.border_thick, pattern.padding)	
+		frame.show()
+
+def demo1024():
 	content = gradient_atkinson_image(190, 190)
 	#content = gradient_atkinson_image(90, 90)
 	frame = frame_image(content, 1024, 1024, 60, 10, 160)
 	# frame = frame_image(content, 1024, 1024, 60, 20, 160)
 	frame.show()
+
+def demo():
+	icon_ios()
 
 def invert(img):
 	rgb_img = img.convert('RGB')
