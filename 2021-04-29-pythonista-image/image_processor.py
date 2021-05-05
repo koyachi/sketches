@@ -260,6 +260,7 @@ def icon_ios():
 	for pattern in patterns:
 		content = bottom_fixed_gradient_atkinson_image(pattern.content_size, pattern.content_size)
 		frame = frame_image(content, pattern.size, pattern.size, pattern.frame_thick, pattern.border_thick, pattern.padding)	
+		print('ios_icon_{:d}.png'.format(pattern.size))
 		frame.show()
 
 def demo1024():
